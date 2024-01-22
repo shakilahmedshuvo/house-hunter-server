@@ -27,19 +27,58 @@ async function run() {
         await client.connect();
 
         // get the database
-        // const houseHunterCollection = client.db('houseHunterDatabase').collection('houseHunterCollection');
         const houseHunterUserCollection = client.db('houseHunterDatabase').collection('houseHunterUserCollection');
+        const houseCollection = client.db('houseHunterDatabase').collection('houseHunterCollection');
 
-        // get api for chef collection
+        // get api for user collection
         app.get("/user", async (req, res) => {
             const result = await houseHunterUserCollection.find().toArray();
             res.send(result);
         });
 
-        // admission post api
+        // post user data
         app.post('/userPost', async (req, res) => {
             const user = req.body;
             const result = await houseHunterUserCollection.insertOne(user);
+            res.send(result);
+        });
+
+        // get api for all houses
+        app.get("/allHouse", async (req, res) => {
+            const result = await houseCollection.find().toArray();
+            res.send(result);
+        });
+
+        // post house api
+        app.post('/allHouse', async (req, res) => {
+            const house = req.body;
+            const result = await houseCollection.insertOne(house);
+            res.send(result);
+        });
+
+        // delete house api
+        app.delete('/allHouse/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const result = await houseCollection.deleteOne(query);
+            res.send(result)
+        });
+
+        // all house update section
+        app.put('/allHouse/:id', async (req, res) => {
+            const email = req.params.email;
+            const update = req.body;
+            const filter = { email: email };
+            const options = { upsert: true };
+            const data = {
+                $set: {
+                    phone: update.phone,
+                    address: update.address,
+                    collegeName: update.collegeName,
+                    subject: update.subject
+                }
+            }
+            const result = await houseCollection.updateOne(filter, data, options);
             res.send(result);
         });
 
