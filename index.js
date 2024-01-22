@@ -27,11 +27,19 @@ async function run() {
         await client.connect();
 
         // get the database
-        const houseHunterCollection = client.db('houseHunterDatabase').collection('houseHunterCollection');
+        // const houseHunterCollection = client.db('houseHunterDatabase').collection('houseHunterCollection');
+        const houseHunterUserCollection = client.db('houseHunterDatabase').collection('houseHunterUserCollection');
 
         // get api for chef collection
-        app.get("/houseCollection", async (req, res) => {
-            const result = await houseHunterCollection.find().toArray();
+        app.get("/user", async (req, res) => {
+            const result = await houseHunterUserCollection.find().toArray();
+            res.send(result);
+        });
+
+        // admission post api
+        app.post('/userPost', async (req, res) => {
+            const user = req.body;
+            const result = await houseHunterUserCollection.insertOne(user);
             res.send(result);
         });
 
