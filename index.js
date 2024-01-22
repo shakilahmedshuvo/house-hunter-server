@@ -74,16 +74,23 @@ async function run() {
 
         // all house update section
         app.put('/allHouse/:id', async (req, res) => {
-            const email = req.params.email;
+            const id = req.params.id;
             const update = req.body;
-            const filter = { email: email };
+            const filter = { _id: new ObjectId(id) };
             const options = { upsert: true };
             const data = {
                 $set: {
-                    phone: update.phone,
+                    name: update.name,
                     address: update.address,
-                    collegeName: update.collegeName,
-                    subject: update.subject
+                    city: update.city,
+                    bedrooms: update.bedrooms,
+                    bathrooms: update.bathrooms,
+                    roomSize: update.roomSize,
+                    picture: update.picture,
+                    date: update.date,
+                    price: update.price,
+                    phone: update.phone,
+                    description: update.description,
                 }
             }
             const result = await houseCollection.updateOne(filter, data, options);
