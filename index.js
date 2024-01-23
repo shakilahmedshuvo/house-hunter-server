@@ -119,6 +119,21 @@ async function run() {
             res.send(result);
         });
 
+
+        // search api for house name
+        app.get("/allHouseSearch", async (req, res) => {
+            const search = req.query.search
+            const sort = req.query.sort
+            const query = { name: { $regex: `${search}`, $options: 'i' } };
+            const sortOption = {
+                sort: {
+                    'price': sort === 'asc' ? 1 : -1
+                }
+            }
+            const result = await houseCollection.find(query, sortOption).toArray();
+            res.send(result)
+        });
+
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
