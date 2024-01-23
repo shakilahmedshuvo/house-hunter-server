@@ -29,6 +29,7 @@ async function run() {
         // get the database
         const houseHunterUserCollection = client.db('houseHunterDatabase').collection('houseHunterUserCollection');
         const houseCollection = client.db('houseHunterDatabase').collection('houseHunterCollection');
+        const houseBookCollection = client.db('houseHunterDatabase').collection('houseBookCollection');
 
         // get api for user collection
         app.get("/user", async (req, res) => {
@@ -94,6 +95,27 @@ async function run() {
                 }
             }
             const result = await houseCollection.updateOne(filter, data, options);
+            res.send(result);
+        });
+
+        // booking get api
+        app.get("/booking", async (req, res) => {
+            const result = await houseBookCollection.find().toArray();
+            res.send(result);
+        });
+
+        // booking post api
+        app.post('/bookingPost', async (req, res) => {
+            const house = req.body;
+            const result = await houseBookCollection.insertOne(house);
+            res.send(result);
+        });
+
+        // booking delete api
+        app.delete('/bookingDelete/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const result = await houseBookCollection.deleteOne(query);
             res.send(result);
         });
 
